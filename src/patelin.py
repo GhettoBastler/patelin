@@ -86,7 +86,7 @@ def generate_name(coeffs=COEFFS, n=3, max_token=3):
         source = generate_source(connection, coeffs)
     while True:
         name = do_markov(source, n, max_token)
-        cursor.execute('SELECT * FROM communes WHERE com_nom = ?;', (name,))
+        cursor.execute('SELECT * FROM communes WHERE com_nom LIKE ?;', (name+'%',))
         if not cursor.fetchone():
             return name
         else:
