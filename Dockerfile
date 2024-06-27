@@ -1,5 +1,5 @@
 # build stage
-FROM --platform=linux/arm64 python:latest AS builder
+FROM python:latest AS builder
 
 COPY requirements.txt .
 
@@ -7,7 +7,7 @@ COPY requirements.txt .
 RUN pip install --user -r requirements.txt
 
 # second stage
-FROM --platform=linux/arm64 python:slim
+FROM python:slim
 
 # copy dependencies from build stage
 COPY --from=builder /root/.local /root/.local
