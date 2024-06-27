@@ -2,7 +2,10 @@ name: Build and push Docker container
 
 on:
   push:
-    branches: [ "release" ]
+    branches:
+      - "release"
+    tags:
+      - 'v*'
 
 env:
   REGISTRY: ghcr.io
@@ -39,6 +42,9 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'release') }}
+            
   
       - name: Build and push Docker image
         id: build-and-push
