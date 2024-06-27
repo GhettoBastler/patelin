@@ -43,6 +43,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'release') }}
+            type=semver,pattern={{version}}
             
   
       - name: Build and push Docker image
