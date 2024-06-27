@@ -40,31 +40,29 @@ def do_markov(source, n=2, max_token=3):
     i = 0
     while res[-1] != '$':
 
-        # Prends la fin
+        # Use the tail of the current name as the key
         key = res[-n:]
-        # Filtre les fragments pour ne garder que ceux qui commencent par
-        # cette lettre
+        # Keep only the fragments that starts with this key
         candidates = dict(
             (fragment, source[fragment]) for fragment in source
             if fragment.startswith(key)
         )
-        # Si l'on a atteint la limite, ne garde que les fragments terminaux
+        # If we reached the token limit, only use final fragments
         if i >= max_token:
             candidates = dict(
                 (fragment, candidates[fragment]) for fragment in candidates
                 if fragment.endswith('$')
             )
 
-        # Calcule la probabilité associée à chaque fragment
+        # Check that there are still available fragments
         total = sum(candidates.values())
-
-        # S'il n'existe aucun fragment valable, revient en arrière
         if total == 0:
+            # Else, remove one character and retry
             res = res[:-1]
             i -= 1
             continue
 
-        # Choisis un fragment en respectant la distribution calculée auparavant
+        # Pick a fragment
         res += random.choices(
             list(candidates.keys()), candidates.values()
         )[0][len(key):]
