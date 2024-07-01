@@ -19,4 +19,4 @@ COPY src/ .
 ENV PATH=/root/.local:$PATH
 
 # run
-CMD [ "python", "./main.py" ]
+CMD [ "python", "-m", "gunicorn", "-w", "2", "-b", "0.0.0.0:8000", "main:server" ]
