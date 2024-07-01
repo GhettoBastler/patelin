@@ -1,3 +1,4 @@
+ENV N_WORKER
 # build stage
 FROM python:latest AS builder
 
@@ -19,4 +20,5 @@ COPY src/ .
 ENV PATH=/root/.local:$PATH
 
 # run
-CMD [ "python", "-m", "gunicorn", "-w", "2", "-b", "0.0.0.0:8000", "main:server" ]
+# CMD [ "python", "-m", "gunicorn", "-w", N_WORKER, "main:server" ]
+ENTRYPOINT ["./run.sh"]
