@@ -1,4 +1,3 @@
-ENV N_WORKER
 # build stage
 FROM python:latest AS builder
 
