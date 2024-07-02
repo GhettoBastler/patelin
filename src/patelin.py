@@ -5,7 +5,6 @@ import random
 import sqlite3
 
 
-# SOURCE_FILE = 'base_source.pickle'
 SOURCE_FILE = 'splited_source.pickle'
 DB_FILE = 'tfidf.db'
 COEFFS = {
