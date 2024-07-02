@@ -38,26 +38,29 @@ def do_markov(source, n=2, min_token=3, max_token=4):
     print("Generating name")
     res = '^'
     i = 0
+    tails = dict(
+        (fragment, source[fragment]) for fragment in source
+        if fragment.endswith('$')
+    )
+    bodies = dict(
+        (fragment, source[fragment]) for fragment in source
+        if fragment not in tails
+    ) 
     while res[-1] != '$':
         # Use the tail of the current name as the key
         key = res[-n:]
-        # Keep only the fragments that starts with this key
-        candidates = dict(
-            (fragment, source[fragment]) for fragment in source
-            if fragment.startswith(key)
-        )
-        # If we reached the token limit, only use final fragments
+        # If we reached the token limit, only use the final fragments
         if i >= max_token-1:
-            candidates = dict(
-                (fragment, candidates[fragment]) for fragment in candidates
-                if fragment.endswith('$')
-            )
+            fragment_pool = tails
         elif i <= min_token:
             # If the name is too short, don't use the final fragments
-            candidates = dict(
-                (fragment, candidates[fragment]) for fragment in candidates
-                if not fragment.endswith('$')
-            )
+            fragment_pool = bodies
+
+        # Keep only the fragments that starts with this key
+        candidates = dict(
+            (fragment, source[fragment]) for fragment in fragment_pool
+            if fragment.startswith(key)
+        )
 
         # Check that there are still available fragments
         total = sum(candidates.values())
