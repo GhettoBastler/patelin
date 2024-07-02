@@ -34,12 +34,11 @@ with open(SOURCE_FILE, 'rb') as file_object:
     BASE_SOURCE = pickle.load(file_object)
 
 
-def do_markov(source, n=2, max_token=3):
+def do_markov(source, n=2, min_token=3, max_token=4):
     print("Generating name")
     res = '^'
     i = 0
     while res[-1] != '$':
-
         # Use the tail of the current name as the key
         key = res[-n:]
         # Keep only the fragments that starts with this key
@@ -48,10 +47,16 @@ def do_markov(source, n=2, max_token=3):
             if fragment.startswith(key)
         )
         # If we reached the token limit, only use final fragments
-        if i >= max_token:
+        if i >= max_token-1:
             candidates = dict(
                 (fragment, candidates[fragment]) for fragment in candidates
                 if fragment.endswith('$')
+            )
+        elif i <= min_token:
+            # If the name is too short, don't use the final fragments
+            candidates = dict(
+                (fragment, candidates[fragment]) for fragment in candidates
+                if not fragment.endswith('$')
             )
 
         # Check that there are still available fragments
@@ -67,6 +72,7 @@ def do_markov(source, n=2, max_token=3):
             list(candidates.keys()), candidates.values()
         )[0][len(key):]
         i += 1
+        print(res)
 
     return res[1:-1]
 
@@ -93,7 +99,7 @@ def generate_source(connection, coeffs):
     return source
 
 
-def generate_name(coeffs=COEFFS, n=3, max_token=3):
+def generate_name(coeffs=COEFFS, n=3, min_token=3, max_token=4):
     connection = sqlite3.connect(DB_FILE)
     cursor = connection.cursor()
     if coeffs == COEFFS:
@@ -101,7 +107,7 @@ def generate_name(coeffs=COEFFS, n=3, max_token=3):
     else:
         source = generate_source(connection, coeffs)
     while True:
-        name = do_markov(source, n, max_token)
+        name = do_markov(source, n, min_token, max_token)
         cursor.execute(
             'SELECT * FROM communes '
             'WHERE com_nom LIKE ?;',
