@@ -5,7 +5,8 @@ import random
 import sqlite3
 
 
-SOURCE_FILE = 'base_source.pickle'
+# SOURCE_FILE = 'base_source.pickle'
+SOURCE_FILE = 'splited_source.pickle'
 DB_FILE = 'tfidf.db'
 COEFFS = {
     'Auvergne-Rhône-Alpes': 1,
@@ -34,18 +35,11 @@ with open(SOURCE_FILE, 'rb') as file_object:
     BASE_SOURCE = pickle.load(file_object)
 
 
-def do_markov(source, n=2, min_token=3, max_token=4):
+def do_markov(bodies, tails, n=2, min_token=3, max_token=4):
     print("Generating name")
     res = '^'
+    print(res)
     i = 0
-    tails = dict(
-        (fragment, source[fragment]) for fragment in source
-        if fragment.endswith('$')
-    )
-    bodies = dict(
-        (fragment, source[fragment]) for fragment in source
-        if fragment not in tails
-    ) 
     while res[-1] != '$':
         # Use the tail of the current name as the key
         key = res[-n:]
@@ -58,7 +52,7 @@ def do_markov(source, n=2, min_token=3, max_token=4):
 
         # Keep only the fragments that starts with this key
         candidates = dict(
-            (fragment, source[fragment]) for fragment in fragment_pool
+            (fragment, fragment_pool[fragment]) for fragment in fragment_pool
             if fragment.startswith(key)
         )
 
@@ -102,15 +96,28 @@ def generate_source(connection, coeffs):
     return source
 
 
+def split_source(source):
+    tails = dict(
+        (fragment, source[fragment]) for fragment in source
+        if fragment.endswith('$')
+    )
+    bodies = dict(
+        (fragment, source[fragment]) for fragment in source
+        if fragment not in tails
+    )
+    return tails, bodies
+
+
 def generate_name(coeffs=COEFFS, n=3, min_token=3, max_token=4):
     connection = sqlite3.connect(DB_FILE)
     cursor = connection.cursor()
     if coeffs == COEFFS:
-        source = BASE_SOURCE
+        bodies, tails = BASE_SOURCE
     else:
         source = generate_source(connection, coeffs)
+        bodies, tails = split_source(source)
     while True:
-        name = do_markov(source, n, min_token, max_token)
+        name = do_markov(bodies, tails, n, min_token, max_token)
         cursor.execute(
             'SELECT * FROM communes '
             'WHERE com_nom LIKE ?;',
