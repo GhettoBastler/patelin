@@ -7,12 +7,15 @@ from main import server
 
 @pytest.fixture()
 def communes():
-    connection = sqlite3.connect('tfidf.db')
-    cursor = connection.cursor()
-    cursor.execute('SELECT com_nom FROM communes;')
-    result = cursor.fetchall()
-    yield [row[0] for row in result]
-    connection.close()
+    # connection = sqlite3.connect('tfidf.db')
+    # cursor = connection.cursor()
+    # cursor.execute('SELECT com_nom FROM communes;')
+    # result = cursor.fetchall()
+    # yield [row[0] for row in result]
+    # connection.close()
+    with open('communes.txt') as f:
+        communes = [name.strip() for name in f.readlines()]
+    return communes
 
 
 @pytest.fixture()
