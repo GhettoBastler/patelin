@@ -19,4 +19,4 @@ COPY src/ .
 ENV PATH=/root/.local:$PATH
 
 # run
-CMD python -m gunicorn -w ${GUNICORN_WORKERS} -b 0.0.0.0:8000 main:server
+CMD python -m gunicorn -w ${PATELIN_API_WORKERS} -b 0.0.0.0:${PATELIN_API_PORT} main:server

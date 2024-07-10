@@ -1,0 +1,49 @@
+body {
+    display: grid;
+    height: 100vh;
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: auto minmax(300px, 500px) auto;
+    grid-template-areas:
+    ". . ."
+    ". centermid ."
+    ". . .";
+}
+
+main {
+    grid-area: centermid;
+}
+
+#titleContainer {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#nameContainer {
+    margin-top: 20px;
+    padding: 10px;
+    border-style: solid;
+    border-radius: 10px;
+    border-width: 5px;
+    border-color: red;
+}
+
+#townName {
+    text-align: center;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+#buttonContainer {
+    margin: 15px;
+    text-align: center;
+}
+
+#generateButton {
+    height: 35px;
+    width: 100px;
+}
+
+#outgoingLinks {
+    text-align: center;
+}
