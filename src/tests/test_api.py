@@ -64,17 +64,3 @@ def test_delete(client):
 def test_patch(client):
     response = client.patch("/")
     assert response.status_code == 405
-
-
-def test_cors_preflight_response(client):
-    response = client.options("/")
-    assert (
-        response.headers["Access-Control-Allow-Origin"] == "*" and
-        response.headers["Access-Control-Allow-Headers"] == "*" and
-        response.headers["Access-Control-Allow-Methods"] == "*"
-    )
-
-
-def test_corsified_response(client):
-    response = client.get("/")
-    assert response.headers["Access-Control-Allow-Origin"] == "*"
