@@ -1,21 +1,20 @@
 body {
-    display: grid;
-    height: 100vh;
-    grid-template-rows: auto 1fr auto;
-    grid-template-columns: auto minmax(300px, 500px) auto;
-    grid-template-areas:
-    ". . ."
-    ". centermid ."
-    ". . .";
-}
-
-main {
-    grid-area: centermid;
+    display: flex;
+    flex-flow: column;
+    max-width: 650px;
+    padding: 20px;
+    margin: auto;
+    align-items: center;
 }
 
 #titleContainer {
+    align-self: flex-start;
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+#titleContainer div {
+    margin: 10px 0 0 0;
 }
 
 #nameContainer {
@@ -25,6 +24,8 @@ main {
     border-radius: 10px;
     border-width: 5px;
     border-color: red;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 #townName {
@@ -42,8 +43,4 @@ main {
 #generateButton {
     height: 35px;
     width: 100px;
-}
-
-#outgoingLinks {
-    text-align: center;
 }
