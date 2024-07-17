@@ -5,16 +5,16 @@ import random
 
 
 SOURCE_FILE = 'splited_source.pickle'
-COMMUNES_FILE = 'communes.txt'
+FIRSTS_FILE = 'firsts.pickle'
 
 
 print("Importing base sources")
 with open(SOURCE_FILE, 'rb') as file_object:
     BASE_SOURCE = pickle.load(file_object)
 
-print("Importing commune names")
-with open(COMMUNES_FILE, 'r') as file_object:
-    COMMUNES = [commune.strip() for commune in file_object.readlines()]
+print("Importing first names")
+with open(FIRSTS_FILE, 'rb') as file_object:
+    FIRSTS = pickle.load(file_object)
 
 
 def do_markov(bodies, tails, n=2, min_token=3, max_token=4):
@@ -56,11 +56,16 @@ def do_markov(bodies, tails, n=2, min_token=3, max_token=4):
     return res[1:-1]
 
 
+def check_name(name):
+    first_part = name.split('-')[0].split(' ')[0]
+    return first_part not in FIRSTS
+
+
 def generate_name(n=3, min_token=3, max_token=4):
     bodies, tails = BASE_SOURCE
     while True:
         name = do_markov(bodies, tails, n, min_token, max_token)
-        if name not in COMMUNES:
+        if check_name(name):
             return name
         else:
             print('Name already exists, retrying')

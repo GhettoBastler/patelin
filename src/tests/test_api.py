@@ -1,21 +1,15 @@
 #!/usr/bin/env python
 
-import sqlite3
 import pytest
+import pickle
 from main import server
 
 
 @pytest.fixture()
-def communes():
-    # connection = sqlite3.connect('tfidf.db')
-    # cursor = connection.cursor()
-    # cursor.execute('SELECT com_nom FROM communes;')
-    # result = cursor.fetchall()
-    # yield [row[0] for row in result]
-    # connection.close()
-    with open('communes.txt') as f:
-        communes = [name.strip() for name in f.readlines()]
-    return communes
+def firsts():
+    with open('firsts.pickle', 'rb') as f:
+        firsts = pickle.load(f)
+    return firsts
 
 
 @pytest.fixture()
@@ -38,10 +32,11 @@ def test_contains_name(client):
     assert response.json["name"]
 
 
-def test_name_does_not_exist(client, communes):
+def test_first_word_does_not_exist(client, firsts):
     response = client.get("/")
     name = response.json["name"]
-    assert name not in communes
+    first_word = name.split('-')[0].split(' ')[0]
+    assert first_word not in firsts
 
 
 def test_unknown_url(client):
