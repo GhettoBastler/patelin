@@ -48,7 +48,10 @@ def do_markov(bodies, tails, n=2, min_token=3, max_token=4):
             continue
 
         # Pick a fragment
-        pick = random.choices(fragment_pool[key], [v[1] for v in fragment_pool[key]])[0][0]
+        pick = random.choices(
+                fragment_pool[key],
+                [v[1] for v in fragment_pool[key]]
+                )[0][0]
         res += pick[len(key):]
         i += 1
         print(f"{i}: {res}")
