@@ -18,7 +18,10 @@ with open(FIRSTS_FILE, 'rb') as file_object:
 
 
 def check_first_part(name):
-    first = name.split('-')[0].split(' ')[0]
+    """
+    Checks that the first part of name isn't the begining of an actual
+    town name"""
+    first = name.replace('$', '-').replace('-', ' ').split()[0]
     return first not in FIRSTS
 
 
@@ -71,7 +74,6 @@ def do_markov(bodies, tails, n=2, min_token=3, max_token=4):
                 print("All good. Continuing")
                 # We can continue
                 checked = True
-
 
     return res[1:-1]
 

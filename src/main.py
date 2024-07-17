@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import patelin
-from flask import Flask, jsonify, abort, request, make_response
+from flask import Flask, jsonify, abort
 
 server = Flask(__name__)
 
