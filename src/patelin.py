@@ -17,10 +17,15 @@ with open(FIRSTS_FILE, 'rb') as file_object:
     FIRSTS = pickle.load(file_object)
 
 
+def check_first_part(name):
+    first = name.split('-')[0].split(' ')[0]
+    return first not in FIRSTS
+
+
 def do_markov(bodies, tails, n=2, min_token=3, max_token=4):
     print("Generating name")
     res = '^'
-    print(res)
+    checked = False
     i = 0
     while res[-1] != '$':
         # Use the tail of the current name as the key
@@ -53,19 +58,25 @@ def do_markov(bodies, tails, n=2, min_token=3, max_token=4):
         i += 1
         print(res)
 
+        if any(symbol in res for symbol in '-$ ') and not checked:
+            # We have a hyphen. Check if the first word exists
+            print("Checking that this doesn\'t look to much like a real name")
+            if not check_first_part(res[1:]):
+                print("Already exists. Retrying")
+                # Restart
+                i = 0
+                res = '^'
+                continue
+            else:
+                print("All good. Continuing")
+                # We can continue
+                checked = True
+
+
     return res[1:-1]
-
-
-def check_name(name):
-    first_part = name.split('-')[0].split(' ')[0]
-    return first_part not in FIRSTS
 
 
 def generate_name(n=3, min_token=3, max_token=4):
     bodies, tails = BASE_SOURCE
-    while True:
-        name = do_markov(bodies, tails, n, min_token, max_token)
-        if check_name(name):
-            return name
-        else:
-            print('Name already exists, retrying')
+    name = do_markov(bodies, tails, n, min_token, max_token)
+    return name
